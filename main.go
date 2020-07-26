@@ -98,12 +98,12 @@ func CfBypass(w http.ResponseWriter, r *http.Request) {
 
 	resp, err := httpGetOverConn(conn, conn.HandshakeState.ServerHello.AlpnProtocol, redirect)
 
-	defer resp.Body.Close()
-
 	if err != nil {
 		w.Write([]byte("Error after httpGetOverConn " + err.Error()))
 		return
 	}
+
+	defer resp.Body.Close()
 
 	body, err := httputil.DumpResponse(resp, true)
 
@@ -116,13 +116,15 @@ func CfBypass(w http.ResponseWriter, r *http.Request) {
 }
 
 func httpGetOverConn(conn net.Conn, alpn string, reqURL *url.URL) (*http.Response, error) {
-	requestHostName := reqURL.Hostname()
+	requestHostName := reqURL.Host
 	req := &http.Request{
 		Method: "GET",
-		URL:    &url.URL{Host: requestHostName + " /"},
+		URL:    reqURL,
 		Header: make(http.Header),
 		Host:   requestHostName,
 	}
+
+	req.Header.Set("user-agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148")
 
 	switch alpn {
 	case "h2":
