@@ -1,2 +1,4 @@
-# Cloudflare Fingerprint bypass
-A reverse proxy that modifies your request to look more human, and bypasses cloudflare's stupid hcaptcha pages
+# Sugma
+Plug and play reverse proxy solution that modifies your requests tls and http2 fingerprints to mock CHrome's requests.
+
+
